@@ -1,27 +1,41 @@
-import { useState } from 'react'
+import React from 'react'
+import { Routes, Route } from 'react-router-dom'
+import Layout from './components/Layout'
+import Dashboard from './pages/Dashboard'
+import Projects from './pages/Projects'
+import ProjectRoom from './pages/ProjectRoom'
+import Assistant from './pages/Assistant'
+import Proposals from './pages/Proposals'
+import Invoices from './pages/Invoices'
+import Meetings from './pages/Meetings'
+import Chat from './pages/Chat'
+import Tickets from './pages/Tickets'
+import Files from './pages/Files'
+import Notifications from './pages/Notifications'
+import Settings from './pages/Settings'
+import Changes from './pages/Changes'
+import Audit from './pages/Audit'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
-      </div>
-    </div>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/projects/:id" element={<ProjectRoom />} />
+        <Route path="/assistant" element={<Assistant />} />
+        <Route path="/proposals" element={<Proposals />} />
+        <Route path="/invoices" element={<Invoices />} />
+        <Route path="/meetings" element={<Meetings />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/tickets" element={<Tickets />} />
+        <Route path="/files" element={<Files />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/changes" element={<Changes />} />
+        <Route path="/audit" element={<Audit />} />
+      </Route>
+    </Routes>
   )
 }
 
