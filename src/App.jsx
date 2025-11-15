@@ -15,6 +15,7 @@ import Notifications from './pages/Notifications'
 import Settings from './pages/Settings'
 import Changes from './pages/Changes'
 import Audit from './pages/Audit'
+import Logout from './pages/Logout'
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/changes" element={<Changes />} />
         <Route path="/audit" element={<Audit />} />
+        <Route path="/logout" element={<Logout />} />
       </Route>
     </Routes>
   )

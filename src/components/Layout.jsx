@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
-import { Home, FolderKanban, Bot, FileText, Receipt, CalendarClock, MessageSquare, LifeBuoy, FolderOpen, Repeat2, ShieldCheck, Bell, Settings, LogOut, Sun, Moon } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { Home, FolderKanban, Bot, FileText, Receipt, CalendarClock, MessageSquare, LifeBuoy, FolderOpen, Repeat2, ShieldCheck, Bell, Settings, LogOut, Sun, Moon, Menu, X } from 'lucide-react'
 import Logo from './Logo'
 
 const navItems = [
@@ -21,9 +21,17 @@ const navItems = [
 
 export default function Layout() {
   const [dark, setDark] = useState(false)
+  const [open, setOpen] = useState(false)
+  const location = useLocation()
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setOpen(false)
+  }, [location.pathname])
 
   return (
-    <div className={"min-h-screen w-full flex bg-[rgb(15,23,42)]/3 dark:bg-[#0B1222] transition-colors" + (dark ? ' dark' : '')}>
+    <div className={(dark ? 'dark ' : '') + 'min-h-screen w-full flex bg-[rgb(15,23,42)]/3 dark:bg-[#0B1222] transition-colors'}>
+      {/* Sidebar - Desktop */}
       <aside className="hidden md:flex md:flex-col md:w-64 p-4 gap-4 bg-white/40 dark:bg-white/5 backdrop-blur-xl border-r border-white/30 dark:border-white/10">
         <div className="flex items-center justify-between">
           <Logo />
@@ -47,9 +55,9 @@ export default function Layout() {
             </NavLink>
           ))}
           <div className="h-px my-3 bg-white/40 dark:bg-white/10" />
-          <button className="flex items-center gap-3 px-3 py-2 rounded-2xl text-sm font-medium text-red-600/90 hover:text-red-500 transition">
+          <NavLink to="/logout" className="flex items-center gap-3 px-3 py-2 rounded-2xl text-sm font-medium text-red-600/90 hover:text-red-500 transition">
             <LogOut className="h-5 w-5" /> Logout
-          </button>
+          </NavLink>
         </nav>
         <div className="mt-auto p-3 rounded-2xl bg-gradient-to-br from-purple-500/20 to-teal-400/20 border border-white/30 dark:border-white/10">
           <p className="text-xs text-slate-700 dark:text-slate-300">Neo-minimal Client Panel</p>
@@ -57,17 +65,61 @@ export default function Layout() {
         </div>
       </aside>
 
+      {/* Sidebar - Mobile Drawer */}
+      {/* Overlay */}
+      <div
+        className={`md:hidden fixed inset-0 z-30 bg-black/40 backdrop-blur-sm transition-opacity ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        onClick={() => setOpen(false)}
+      />
+      {/* Drawer */}
+      <aside className={`md:hidden fixed top-0 left-0 z-40 h-full w-80 max-w-[85%] p-4 bg-white/80 dark:bg-white/10 backdrop-blur-xl border-r border-white/50 dark:border-white/10 transition-transform ${open ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex items-center justify-between">
+          <Logo />
+          <button onClick={() => setOpen(false)} className="p-2 rounded-xl bg-white/50 dark:bg-white/10 border border-white/50 dark:border-white/10">
+            <X className="h-5 w-5 text-slate-700 dark:text-slate-200" />
+          </button>
+        </div>
+        <nav className="mt-4 space-y-1">
+          {navItems.map(({ to, label, icon: Icon }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={to === '/'}
+              className={({ isActive }) => `group flex items-center gap-3 px-3 py-2 rounded-2xl text-sm font-medium transition-all border ${isActive ? 'bg-gradient-to-r from-purple-500/20 to-teal-400/20 text-slate-900 dark:text-white border-white/40 dark:border-white/10' : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 hover:dark:text-white border-transparent hover:border-white/30'}`}
+            >
+              <Icon className="h-5 w-5" />
+              <span>{label}</span>
+            </NavLink>
+          ))}
+          <div className="h-px my-3 bg-white/40 dark:bg-white/10" />
+          <NavLink to="/logout" className="flex items-center gap-3 px-3 py-2 rounded-2xl text-sm font-medium text-red-600/90 hover:text-red-500 transition">
+            <LogOut className="h-5 w-5" /> Logout
+          </NavLink>
+        </nav>
+      </aside>
+
       <main className="flex-1 relative">
+        {/* Ambient blobs */}
         <div className="absolute inset-0 -z-0">
           <div className="absolute -top-24 -left-24 h-72 w-72 bg-purple-500/20 rounded-full blur-3xl" />
           <div className="absolute top-1/3 -right-24 h-72 w-72 bg-teal-400/20 rounded-full blur-3xl" />
         </div>
+
+        {/* Mobile Topbar */}
         <div className="md:hidden p-4 flex items-center justify-between">
+          <button
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            onClick={() => setOpen(!open)}
+            className="p-2 rounded-xl bg-white/60 dark:bg-white/10 border border-white/50 dark:border-white/10 shadow-sm"
+          >
+            {open ? <X className="h-5 w-5 text-slate-700 dark:text-slate-200" /> : <Menu className="h-5 w-5 text-slate-700 dark:text-slate-200" />}
+          </button>
           <Logo />
-          <button onClick={() => setDark(!dark)} className="p-2 rounded-xl bg-white/40 dark:bg-white/10 border border-white/40 dark:border-white/10">
+          <button onClick={() => setDark(!dark)} className="p-2 rounded-xl bg-white/60 dark:bg-white/10 border border-white/50 dark:border-white/10 shadow-sm">
             {dark ? <Sun className="h-4 w-4 text-amber-300"/> : <Moon className="h-4 w-4 text-slate-700"/>}
           </button>
         </div>
+
         <div className="p-4 md:p-8">
           <Outlet />
         </div>
